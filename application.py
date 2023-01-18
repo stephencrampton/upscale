@@ -8,7 +8,9 @@ def say_hello(username="World"):
 
 # some bits of text for the page.
 header_text = '''
-    <html>\n<head> <title>SteveC EB Flask Test</title> </head>\n<body>'''
+    <html>\n<head> <title>SteveC EB Flask Test</title> </head>\n<body>
+    <img src="/static/images/Stella.jpg">
+    '''
 instructions = '''
     <p><em>Hint</em>: This is a RESTful web service! Append a username
     to the URL (for example: <code>/Thelonious</code>) to say hello to
@@ -17,7 +19,7 @@ home_link = '<p><a href="/">Back</a></p>\n'
 footer_text = '</body>\n</html>'
 
 # EB looks for an 'application' callable by default.
-application = Flask(__name__)
+application = Flask(__name__, static_url_path='/static')
 
 # add a rule for the index page.
 application.add_url_rule('/', 'index', (lambda: header_text +
