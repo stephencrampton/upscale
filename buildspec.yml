@@ -34,3 +34,7 @@ reports:
     base-directory: 'test-reports'
     discard-paths: yes
     file-format: JunitXml
+
+artifacts:
+  files:
+    - '**/*'
