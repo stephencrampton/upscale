@@ -1,0 +1,14 @@
+*$py.class
+*.egg
+*.egg-info/
+*.py[cod]
+.coverage
+.coverage.*
+.idea
+.ipynb_checkpoints
+.venv
+.webassets-cache
+__pycache__/
+coverage.xml
+htmlcov/
+instance/
