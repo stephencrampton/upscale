@@ -48,6 +48,7 @@ def upload_file():
     return """
     <!doctype html>
     <title>Image Resizer</title>
+    <img src="/static/images/Stella.jpg">
     <h1>Upload image file</h1>
     <form method=post enctype=multipart/form-data>
       <input type=file name=file>
