@@ -1,5 +1,6 @@
 from fastapi import FastAPI
-import redis
+import aioredis
+import aiofiles
 import io
 from PIL import Image
 from werkzeug.utils import secure_filename
@@ -19,7 +20,7 @@ MAX_CONTENT_LENGTH = 16_000_000
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-r = redis.Redis(host="redis", port=6379)
+redis = aioredis.Redis(host="redis", port=6379)
 
 
 @app.get("/")
@@ -28,9 +29,9 @@ async def home():
 
 
 @app.get("/hits")
-def read_hits():
-    r.incr("hits")
-    return {"Number of hits": r.get("hits")}
+async def read_hits():
+    await redis.incr("hits")
+    return {"Number of hits": await redis.get("hits")}
 
 
 def allowed_file(filename):
@@ -49,7 +50,7 @@ def get_mime_type(filename):
 
 
 @app.post("/")
-def uploadfile(file: UploadFile = File(...)):
+async def uploadfile(file: UploadFile = File(...)):
     if file.filename == "":
         return RedirectResponse(url="/", status_code=301)
     if allowed_file(file.filename):
@@ -57,8 +58,8 @@ def uploadfile(file: UploadFile = File(...)):
         if file.file.read(1):
             return {"message": f"File is larger than {MAX_CONTENT_LENGTH}"}
         file.file.close()
-        with open(UPLOAD_FOLDER / file.filename, "wb") as f:
-            f.write(contents)
+        async with aiofiles.open(UPLOAD_FOLDER / file.filename, "wb") as f:
+            await f.write(contents)
         filename = secure_filename(file.filename)
         basewidth = 300
         img = Image.open(UPLOAD_FOLDER / filename)
@@ -68,14 +69,15 @@ def uploadfile(file: UploadFile = File(...)):
         dot_pos = filename.rfind(".")
         filename_resized = filename[:dot_pos] + "-resized" + filename[dot_pos:]
         filepath_resized = os.path.join(UPLOAD_FOLDER, filename_resized)
-        img.save(filepath_resized)
         byte_stream = io.BytesIO()
         img.save(byte_stream, get_media_type(filename_resized))
         img_bytes = byte_stream.getvalue()
+        async with aiofiles.open(UPLOAD_FOLDER / filename_resized, "wb") as f:
+            await f.write(img_bytes)
         return Response(content=img_bytes, media_type=get_mime_type(filename_resized))
     return RedirectResponse("/", status_code=301)
 
 
 @app.get("/download/{name}")
-def download(name: str):
+async def download(name: str):
     return FileResponse(UPLOAD_FOLDER / name, media_type=get_mime_type(name))
