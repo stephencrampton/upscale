@@ -1,1 +1,1 @@
-Upscale
+Upscaler

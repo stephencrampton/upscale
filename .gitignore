@@ -2,6 +2,7 @@
 *.egg
 *.egg-info/
 *.py[cod]
+.DS_Store
 .coverage
 .coverage.*
 .idea
@@ -14,4 +15,5 @@ coverage.xml
 htmlcov/
 instance/
 test-reports/
+uploads/
 venv/

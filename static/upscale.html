@@ -1,0 +1,38 @@
+<!doctype html>
+
+<head>
+    <title>Image Upscaler</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+</head>
+
+<body>
+    <!-- Navbar (sit on top) -->
+    <div class="w3-top">
+        <div class="w3-bar w3-white w3-wide w3-padding w3-card">
+            <a href="#home" class="w3-bar-item w3-button">Image <b>Upscaler</b></a>
+            <!-- Float links to the right. Hide them on small screens -->
+            <div class="w3-right w3-hide-small">
+                <a href="/" class="w3-bar-item w3-button">Home</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="w3-container w3-padding-32" id="upscale">
+        <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16">Upscale an image file</h3>
+        <form method=post enctype=multipart/form-data>
+            <input class="w3-button w3-light-grey w3-section" type=file name=file>
+            <button class="w3-button w3-black w3-section" type="submit">
+                <i class="fa fa-paper-plane"></i> UPLOAD
+            </button>
+        </form>
+    </div>
+
+    <div class="w3-row-padding">
+        {% for fileinfo in image_paths %}
+        <p><a href="{{ fileinfo['filepath_processed'] }}">
+                {{ fileinfo["filename"] }}
+                <img class="w3-image" src="{{ fileinfo['filepath_thumbnail'] }}" alt=""></a></p>
+        {% endfor %}
+    </div>
+
+</body>
